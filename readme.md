@@ -26,7 +26,7 @@ First, checkout this project locally and then follow these steps:
 ## Notes & Tips
 
 - If you make changes to your application, you will need to rebuild your image and restart your container.
-- `docker-machine` is the command the controls the virtual machine that is running Docker on your machine.
+- The `docker-machine` command controls the virtual machine that is running Docker on your machine.
 - View logs for a docker container: `docker logs <container-id>`
 - List the running containers: `docker ps -a`
 - List all local images: `docker images`
