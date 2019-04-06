@@ -16,7 +16,7 @@ First, checkout this project locally and then follow these steps:
 4. Run the image in a container: `docker run -d -p 4001:4000 hello-world`
   - The `-d` flag says to run the container in the background (daemon mode).
   - The `-p` flag maps port 4000 from the container to port 4001 on the docker machine.
-5. View your new container: `docker ps -a`
+5. View your new container: `docker ps`
 6. Check the logs for your container: `docker logs <container-id>`
 7. Check the port of the container: `docker port <container-id>`
 8. Open the app running on the docker machine: `open http://$(docker-machine ip default):4001`
@@ -28,7 +28,8 @@ First, checkout this project locally and then follow these steps:
 - If you make changes to your application, you will need to rebuild your image and restart your container.
 - The `docker-machine` command controls the virtual machine that is running Docker on your machine.
 - View logs for a docker container: `docker logs <container-id>`
-- List the running containers: `docker ps -a`
+- List all running containers: `docker ps -a`
+  - List running containers: `docker ps`
 - List all local images: `docker images`
 - Remove an image: `docker rmi <image-id>`
 - Remove a container: `docker rm <container-id>`
