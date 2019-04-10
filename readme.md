@@ -4,7 +4,6 @@ This repository gives you a quick introduction to getting docker running with No
 
 You can adapt the same approach to other languages but I chose Node because it's what I use most often.
 
-
 ## Setup
 
 First, checkout this project locally and then follow these steps:
