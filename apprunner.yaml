@@ -1,0 +1,10 @@
+version: 1.0
+services:
+  app:
+    runtime: nodejs16
+    port: 4000
+    build:
+      commands:
+        - npm install
+    start:
+      command: node /src/server.js
