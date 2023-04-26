@@ -37,7 +37,7 @@ jobs:
           ECR_REPOSITORY: assessment
           IMAGE_TAG: sample_image
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: SSH into EC2 instance
