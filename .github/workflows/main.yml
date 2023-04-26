@@ -38,7 +38,7 @@ jobs:
           IMAGE_TAG: sample_image
         run: |
           docker build -t $IMAGE_TAG .
-          docker push $IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: SSH into EC2 instance
         uses: appleboy/ssh-action@master
