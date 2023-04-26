@@ -8,7 +8,8 @@ on:
 env:
   AWS_DEFAULT_REGION: us-east-1
   AWS_ACCOUNT_ID: your-account-id
-  ECR_REPOSITORY: your-ecr-repo
+  ECR_REPOSITORY: assessment
+  IMAGE_TAG: sample
   EC2_INSTANCE_IP: your-ec2-instance-ip
   SSH_KEY: ${{ secrets.SSH_KEY }} # Add your SSH key to GitHub secrets
 
@@ -30,11 +31,7 @@ jobs:
       - name: Login to AWS ECR
         uses: aws-actions/amazon-ecr-login@v1
         
-      - name: Build, tag, and push image to Amazon ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: assessment
-          IMAGE_TAG: sample_image
+    
 
       - name: Build and push Docker image
         run: |
