@@ -1,30 +1,48 @@
-     
-name: Build and push image to ECR
-on: push
+name: Push to ECR and deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_DEFAULT_REGION: us-east-1
+  AWS_ACCOUNT_ID: your-account-id
+  ECR_REPOSITORY: your-ecr-repo
+  EC2_INSTANCE_IP: your-ec2-instance-ip
+  SSH_KEY: ${{ secrets.SSH_KEY }} # Add your SSH key to GitHub secrets
+
 jobs:
-  build:
-    name: Build Image
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check out code
+      - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-      - name: Login to Amazon ECR
-        id: login-ecr
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Login to AWS ECR
         uses: aws-actions/amazon-ecr-login@v1
-      - name: Build, tag, and push image to Amazon ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: assessment
-          IMAGE_TAG: sample_image
+
+      - name: Build and push Docker image
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker build -t $ECR_REPOSITORY:$GITHUB_SHA .
+          docker push $ECR_REPOSITORY:$GITHUB_SHA
 
-
-      
+      - name: SSH into EC2 instance
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.EC2_INSTANCE_IP }}
+          username: ubuntu
+          key: ${{ env.SSH_KEY }}
+          script: |
+            docker stop my-container || true
+            docker rm my-container || true
+            docker pull $ECR_REPOSITORY:$GITHUB_SHA
+            docker run -d --name my-container -p 4000:4000 $ECR_REPOSITORY:$GITHUB_SHA
