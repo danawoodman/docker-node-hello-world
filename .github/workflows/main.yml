@@ -9,6 +9,7 @@ env:
   AWS_DEFAULT_REGION: us-east-1
   AWS_ACCOUNT_ID: 584603588226
   ECR_REPOSITORY: assessment
+  IMAGE_TAG: sample_image
   EC2_INSTANCE_IP: 54.235.27.80
   SSH_KEY: ${{ secrets.SSH_KEY }} # Add your SSH key to GitHub secrets
 
@@ -32,8 +33,8 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t $ECR_REPOSITORY:$GITHUB_SHA .
-          docker push $ECR_REPOSITORY:$GITHUB_SHA
+          docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REPOSITORY:$IMAGE_TAG
 
       - name: SSH into EC2 instance
         uses: appleboy/ssh-action@master
@@ -44,5 +45,5 @@ jobs:
           script: |
             docker stop my-container || true
             docker rm my-container || true
-            docker pull $ECR_REPOSITORY:$GITHUB_SHA
-            docker run -d --name my-container -p 4000:4000 $ECR_REPOSITORY:$GITHUB_SHA
+            docker pull $ECR_REPOSITORY:$IMAGE_TAG
+            docker run -d --name my-container -p 4000:4000 $ECR_REPOSITORY:$IMAGE_TAG
