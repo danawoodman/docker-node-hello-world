@@ -9,6 +9,7 @@ env:
   AWS_DEFAULT_REGION: us-east-1
   AWS_ACCOUNT_ID: 584603588226
   ECR_REPOSITORY: assessment
+  IMAGE_TAG: sample image
   EC2_INSTANCE_IP: your-ec2-instance-ip
   SSH_KEY: ${{ secrets.SSH_KEY }} # Add your SSH key to GitHub secrets
 
