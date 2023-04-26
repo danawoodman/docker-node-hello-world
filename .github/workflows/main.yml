@@ -3,13 +3,13 @@ name: Push to ECR and deploy to EC2
 on:
   push:
     branches:
-      - master
+      - main
 
 env:
   AWS_DEFAULT_REGION: us-east-1
-  AWS_ACCOUNT_ID: your-account-id
+  AWS_ACCOUNT_ID: 584603588226
   ECR_REPOSITORY: assessment
-  EC2_INSTANCE_IP: your-ec2-instance-ip
+  EC2_INSTANCE_IP: 54.235.27.80
   SSH_KEY: ${{ secrets.SSH_KEY }} # Add your SSH key to GitHub secrets
 
 jobs:
@@ -19,6 +19,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
       - name: Login to AWS ECR
         uses: aws-actions/amazon-ecr-login@v1
