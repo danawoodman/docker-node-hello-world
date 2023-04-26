@@ -3,7 +3,7 @@ name: Push to ECR and deploy to EC2
 on:
   push:
     branches:
-      - main
+      - master
 
 env:
   AWS_DEFAULT_REGION: us-east-1
@@ -45,4 +45,4 @@ jobs:
             docker stop my-container || true
             docker rm my-container || true
             docker pull $ECR_REPOSITORY:$GITHUB_SHA
-            docker run -d --name my-container -p 80:80 $ECR_REPOSITORY:$GITHUB_SHA
+            docker run -d --name my-container -p 4000:4000 $ECR_REPOSITORY:$GITHUB_SHA
