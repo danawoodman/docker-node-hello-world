@@ -1,0 +1,41 @@
+name: Push to ECR and deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_DEFAULT_REGION: us-east-1
+  AWS_ACCOUNT_ID: your-account-id
+  ECR_REPOSITORY: your-ecr-repo
+  EC2_INSTANCE_IP: your-ec2-instance-ip
+  SSH_KEY: ${{ secrets.SSH_KEY }} # Add your SSH key to GitHub secrets
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to AWS ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t $ECR_REPOSITORY:$GITHUB_SHA .
+          docker push $ECR_REPOSITORY:$GITHUB_SHA
+
+      - name: SSH into EC2 instance
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.EC2_INSTANCE_IP }}
+          username: ubuntu
+          key: ${{ env.SSH_KEY }}
+          script: |
+            docker stop my-container || true
+            docker rm my-container || true
+            docker pull $ECR_REPOSITORY:$GITHUB_SHA
+            docker run -d --name my-container -p 80:80 $ECR_REPOSITORY:$GITHUB_SHA
