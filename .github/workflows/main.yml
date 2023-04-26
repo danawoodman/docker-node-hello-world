@@ -8,7 +8,7 @@ on:
 env:
   AWS_DEFAULT_REGION: us-east-1
   AWS_ACCOUNT_ID: your-account-id
-  ECR_REPOSITORY: your-ecr-repo
+  ECR_REPOSITORY: assessment
   EC2_INSTANCE_IP: your-ec2-instance-ip
   SSH_KEY: ${{ secrets.SSH_KEY }} # Add your SSH key to GitHub secrets
 
