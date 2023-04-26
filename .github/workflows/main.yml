@@ -3,7 +3,7 @@ name: Push to ECR and deploy to EC2
 on:
   push:
     branches:
-      - main
+      - master
 
 env:
   AWS_DEFAULT_REGION: us-east-1
