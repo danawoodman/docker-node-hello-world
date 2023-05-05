@@ -31,6 +31,7 @@ jobs:
           host: ${{ env.EC2_INSTANCE_IP }}
           username: ubuntu
           key: ${{ env.SSH_KEY }}
+          port: ${{env.PORT}}
           script: |
             docker stop my-container || true
             docker rm my-container || true
