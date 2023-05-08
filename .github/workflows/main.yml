@@ -31,7 +31,6 @@ jobs:
           host: ${{ secrets.EC2_INSTANCE_IP }}
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
-          port: ${{secrets.PORT}}
           script: |
             docker stop my-container || true
             docker rm my-container || true
