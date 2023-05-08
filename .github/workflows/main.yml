@@ -25,7 +25,7 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
       - name: SSH
-        run: cat ~/ssh/id_rsa     
+        run: cat ~/.ssh/id_rsa     
       - name: SSH into EC2 instance
         uses: appleboy/ssh-action@v0.1.9
         with:
