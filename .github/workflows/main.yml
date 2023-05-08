@@ -24,29 +24,7 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG 
-          
-name: Deploy
-
-on:
-  push:
-    branches: [ dev ]
-
-jobs:
-  Deploy:
-    name: Deploy to EC2
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v2 
-      - name: Build & Deploy
-        env:
-            PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-            HOSTNAME: ${{secrets.SSH_HOST}}
-            USER_NAME: ${secrets.USER_NAME}
-      
-        run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '         
+             
           
           
           
