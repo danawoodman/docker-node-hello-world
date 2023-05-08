@@ -30,7 +30,7 @@ jobs:
         uses: appleboy/ssh-action@v0.1.9
         with:
           host: ${{ secrets.HOST }}
-          key: ${{ secrets.KEY }}
+          key: ${{ secrets.SSH_KEY }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
