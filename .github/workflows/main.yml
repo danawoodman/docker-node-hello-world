@@ -24,20 +24,16 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-      - name: SSH
-        run: cat ~/.ssh/id_rsa     
-      - name: SSH into EC2 instance
-        uses: appleboy/ssh-action@v0.1.9
-        with:
-          host: ${{ secrets.HOST }}
-          key: ${{ secrets.SSH_KEY }}
-          username: ${{ secrets.USERNAME }}
-          port: ${{ secrets.PORT }}
-          
-          script: |
-            docker stop my-container || true
-            docker rm my-container || true
-            docker pull $ECR_REPOSITORY:$IMAGE_TAG
-            docker run -d --name my-container -p 4000:4000 $ECR_REPOSITORY:$IMAGE_TAG
+             steps:
+      - uses: actions/checkout@v2 
+      - name: Build & Deploy
+        env:
+            PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+            HOSTNAME: ${{secrets.SSH_HOST}}
+            USER_NAME: ${secrets.USER_NAME}
+      
+        run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME}
         
-          
+      
