@@ -30,6 +30,7 @@ jobs:
         uses: appleboy/ssh-action@v0.1.9
         with:
           host: ${{ secrets.HOST }}
+          key: ${{ secrets.KEY }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
@@ -38,6 +39,6 @@ jobs:
             docker stop my-container || true
             docker rm my-container || true
             docker pull $ECR_REPOSITORY:$IMAGE_TAG
-            docker run -d --name my-container   $ECR_REPOSITORY:$IMAGE_TAG
+            docker run -d --name my-container -p 4000:4000   $ECR_REPOSITORY:$IMAGE_TAG
         
           
