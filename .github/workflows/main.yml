@@ -29,8 +29,10 @@ jobs:
       - name: SSH into EC2 instance
         uses: appleboy/ssh-action@v0.1.9
         with:
-          host: ${{ secrets.EC2_INSTANCE_IP }}
-          username: ubuntu
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
           key: ${{ secrets.SSH_KEY }}
           script: |
             docker stop my-container || true
