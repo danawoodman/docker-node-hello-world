@@ -1,22 +1,42 @@
-name: Deploy
+name: Deploy to EC2
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ main ]
 
 jobs:
-  Deploy:
-    name: Deploy to EC2
+  build-and-deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - uses: actions/checkout@v2 
-      - name: Build & Deploy
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push Docker image to ECR
         env:
-            PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-            HOSTNAME: ${{secrets.SSH_HOST}}
-            USER_NAME: ${secrets.USER_NAME}
-      
+          AWS_REGION: us-west-2
+          ECR_REPOSITORY: my-ecr-repository
         run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+          echo ${{ secrets.AWS_ACCESS_KEY_ID }} >> ~/.aws/credentials
+          echo ${{ secrets.AWS_SECRET_ACCESS_KEY }} >> ~/.aws/credentials
+          echo ${{ secrets.AWS_DEFAULT_REGION }} >> ~/.aws/config
+          export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          export IMAGE_NAME=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}
+          docker buildx build --push --platform linux/amd64,linux/arm64 -t $IMAGE_NAME .
+
+      - name: Connect to EC2 instance and deploy Docker container
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          password: ${{ secrets.EC2_PASSWORD }}
+          port: 22
+          script: |
+            export IMAGE_NAME=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}
+            docker stop my-container || true
+            docker rm my-container || true
+            docker pull $IMAGE_NAME
+            docker run -d --name my-container -p 80:80 $IMAGE_NAME
