@@ -28,10 +28,11 @@ jobs:
       - name: SSH into EC2 instance
         uses: appleboy/ssh-action@v0.1.9
         with:
-          host: ${{ secrets.EC2_INSTANCE_IP }}
-          username: ubuntu
-          key: ${{ secrets.SSH_KEY }}
-          script: |
+           host: ${{ secrets.HOST }}
+           username: ${{ secrets.USERNAME }}
+           password: ${{ secrets.PASSWORD }}
+           port: ${{ secrets.PORT }}
+           script: |
             docker stop my-container || true
             docker rm my-container || true
             docker pull $ECR_REPOSITORY:$IMAGE_TAG
