@@ -26,19 +26,16 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           
     
-      - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@v0.1.10
+      - name: SSH into EC2 instance
+        uses: appleboy/ssh-action@v0.1.9
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          key: ${{ secrets.KEY }}
-          port: ${{ secrets.PORT }}
-          script: whoami
-         # script: |
-          #  docker stop my-container || true
-           # docker rm my-container || true
-            #docker pull $ECR_REPOSITORY:$IMAGE_TAG
-            #docker run -d --name my-container -p 4000:4000 $ECR_REPOSITORY:$IMAGE_TAG
+          host: ${{ secrets.EC2_INSTANCE_IP }}
+          username: ubuntu
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            docker stop my-container || true
+            docker rm my-container || true
+            docker pull $ECR_REPOSITORY:$IMAGE_TAG
+            docker run -d --name my-container -p 4000:4000 $ECR_REPOSITORY:$IMAGE_TAG
         
           
