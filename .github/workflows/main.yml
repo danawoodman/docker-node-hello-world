@@ -33,11 +33,11 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
-          key: ${{ secrets.SSH_KEY }}
+          
           script: |
             docker stop my-container || true
             docker rm my-container || true
             docker pull $ECR_REPOSITORY:$IMAGE_TAG
-            docker run -d --name my-container -p 4000:4000 $ECR_REPOSITORY:$IMAGE_TAG
+            docker run -d --name my-container -p  $ECR_REPOSITORY:$IMAGE_TAG
         
           
